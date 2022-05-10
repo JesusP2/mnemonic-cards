@@ -1,66 +1,93 @@
 import { Layout, Menu } from 'antd';
-import {
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
-} from '@ant-design/icons';
-import { useState } from 'react';
+import { MenuUnfoldOutlined, MenuFoldOutlined, FolderOpenOutlined, FileImageOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import useDeckStore from 'stores/decks';
+import { sanityClient, urlFor } from 'sanity';
+import { Deck } from 'types';
 
 const { Sider, Content } = Layout;
 
-export default function PlayGame({ children }: { children: React.ReactNode }) {
-    const [collapsed, setCollapsed] = useState(false);
+export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
 
-    function toggleCollapse() {
-        setCollapsed((prev) => !prev);
-    }
+  const decks = useDeckStore((state) => state.decks);
+  const fetchDecks = useDeckStore((state) => state.fetch);
+
+  useEffect(() => {
+    fetchDecks().catch((err) => console.log(err));
+  }, []);
+
+  function toggleCollapse() {
+    setCollapsed((prev) => !prev);
+  }
+
+  return (
+    <Layout>
+      <Sider trigger={null} collapsible collapsed={collapsed} width="15rem" className="h-screen">
+        <div
+          className="w-full flex justify-end px-2"
+        >
+          {collapsed ? (
+            <MenuUnfoldOutlined
+              onClick={toggleCollapse}
+              className="text-white text-xl"
+            />
+          ) : (
+            <MenuFoldOutlined
+              onClick={toggleCollapse}
+              className="text-white text-xl"
+            />
+          )}
+        </div>
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          items={[
+            {
+              key: '1',
+              icon: <FolderOpenOutlined />,
+              label: 'decks',
+              children: decks.map(({ _id, mainImage, deck }) => ({
+                key: _id,
+                icon: <ImageCard url={mainImage} />,
+                label: deck,
+              })),
+            },
+          ]}
+        ></Menu>
+      </Sider>
+
+      <Layout className="site-layout">
+        <Content className="bg-neutral-900">{children}</Content>
+      </Layout>
+    </Layout>
+  );
+}
+
+function ImageCard({
+  url,
+}: {
+  url?: {
+    _type: string;
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+  };
+}) {
+  if (url) {
     return (
-        <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed} style={{ height: '100vh' }}>
-                <div className="flex justify-end w-full bg-red-300" style={{width: '100%', display: 'flex', justifyContent: 'flex-end', padding: '0 0.5rem', marginTop: '0.5rem'}}>
-                    {collapsed ? (
-                        <MenuUnfoldOutlined
-                            className=""
-                            onClick={toggleCollapse}
-                            style={{ color: 'white', fontSize: '22px' }}
-                        />
-                    ) : (
-                        <MenuFoldOutlined
-                            className=""
-                            onClick={toggleCollapse}
-                            style={{ color: 'white', fontSize: '22px' }}
-                        />
-                    )}
-                </div>
-                <Menu
-                    theme="dark"
-                    mode="inline"
-                    defaultSelectedKeys={['1']}
-                    items={[
-                        {
-                            key: '1',
-                            icon: <UserOutlined />,
-                            label: 'nav 1',
-                        },
-                        {
-                            key: '2',
-                            icon: <VideoCameraOutlined />,
-                            label: 'nav 2',
-                        },
-                        {
-                            key: '3',
-                            icon: <UploadOutlined />,
-                            label: 'nav 3',
-                        },
-                    ]}
-                ></Menu>
-            </Sider>
-
-            <Layout className="site-layout">
-                <Content style={{backgroundColor: 'black'}}>{children}</Content>
-            </Layout>
-        </Layout>
+      <img
+        className="w-10 h-10 rounded-sm mr-4"
+        src={urlFor(url).url()}
+      />
     );
+  } else {
+    return (
+      <div className="w-10 h-10 text-center leading-10 mr-4">
+        <FileImageOutlined style={{ fontSize: "24px" }} />
+      </div>
+    )
+  }
 }
