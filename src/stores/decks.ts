@@ -1,6 +1,7 @@
 import create from 'zustand';
 import { sanityClient } from 'sanity';
 import type { Card, Deck } from 'types';
+import { toast } from 'react-toastify';
 
 export interface DeckStore {
   decks: Deck[];
@@ -8,30 +9,32 @@ export interface DeckStore {
   currentDeck: Deck | null;
   setCurrentDeck: (key: string, cards: Card[]) => void;
   cardsTypeInCurrentDeckCount: { easy: number; normal: number; hard: number; again: number; none: number };
+  createDeck: (name: string, image?: File) => Promise<void>;
+  updateDeck: ({ deckId, name, image }: { deckId: string; name?: string; image?: File }) => Promise<void>;
+  deleteDeck: (deckId: string) => Promise<void>;
 }
 
 const useDeckStore = create<DeckStore>((set, get) => ({
   decks: [],
   currentDeck: null,
-  setCurrentDeck: (key, cards) => {
-    set((state) => ({ currentDeck: state.decks.filter(({ _id }) => _id === key)[0] }));
-    //TODO: Uncomment when CardStore is defined
-    // set((state) => {
-    //   const count = { easy: 0, normal: 0, hard: 0, again: 0, none: 0 };
-    //   cards.forEach(({ difficulty, deck }) => {
-    //     if (state.currentDeck?._id === deck._ref) {
-    //       count[difficulty]++;
-    //     }
-    //   });
-    //   return { cardsTypeInCurrentDeckCount: count };
-    // });
-  },
   cardsTypeInCurrentDeckCount: {
     easy: 0,
     normal: 0,
     hard: 0,
     again: 0,
     none: 0,
+  },
+  setCurrentDeck: (key, cards) => {
+    console.log(cards)
+    console.log(cards.length)
+    set((state) => ({ currentDeck: state.decks.filter(({ _id }) => _id === key)[0] }));
+    const count = { easy: 0, normal: 0, hard: 0, again: 0, none: 0 };
+    cards.forEach(({ difficulty, deck }) => {
+      if (get().currentDeck?._id === deck._ref) {
+        count[difficulty]++;
+      }
+    });
+    set(() => ({ cardsTypeInCurrentDeckCount: count }));
   },
   fetch: async () => {
     const query = `*[_type == 'deck']`;
@@ -59,6 +62,7 @@ const useDeckStore = create<DeckStore>((set, get) => ({
 
     const deckCreated = (await sanityClient.create(doc)) as Deck;
     set((state) => ({ decks: [...state.decks].concat([deckCreated]) }));
+    toast.info('Deck created!');
   },
 
   updateDeck: async ({ deckId, name, image }: { deckId: string; name?: string; image?: File }) => {
@@ -79,21 +83,37 @@ const useDeckStore = create<DeckStore>((set, get) => ({
 
     if (name || image) {
       const updatedDeck: Deck = await sanityClient.patch(deckId).set(doc).commit();
-      set((state) => {
-        let idx = -1;
-        state.decks.filter((deck: Deck, index: number) => {
-          if (deck._id === updatedDeck._id) {
-            idx = index;
-            return true;
-          }
-          return false;
-        });
-        const updatedDecks = [...state.decks.slice(0, idx), updatedDeck, ...state.decks.slice(idx + 1)];
-        return { decks: updatedDecks };
+
+      const updatedDecks = get().decks.map((deck) => {
+        if (deck._id === updatedDeck._id) {
+          return updatedDeck;
+        } else {
+          return deck;
+        }
       });
+      set(() => ({ decks: updatedDecks }));
+      if (updatedDeck._id === get().currentDeck?._id) {
+        set(() => ({currentDeck: updatedDeck}))
+      }
+      toast.info('Deck updated correctly!');
     } else {
-      throw new Error('No fields to update');
+      toast.error('No fields to update');
     }
+  },
+
+  deleteDeck: async (deckId) => {
+    const deletedDeck = await sanityClient.delete(deckId);
+
+    const updatedDecks = get().decks.map((deck) => {
+      if (deck._id !== deckId) {
+        return deck;
+      }
+    }) as Deck[];
+    set(() => ({ decks: updatedDecks }));
+    if (deletedDeck._id === get().currentDeck?._id) {
+      set(() => ({currentDeck: null}))
+    }
+    toast.info('Deck deleted succesfully!');
   },
 }));
 export default useDeckStore;
