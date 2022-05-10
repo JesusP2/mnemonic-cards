@@ -2,8 +2,9 @@ import { Layout, Menu } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined, FolderOpenOutlined, FileImageOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import useDeckStore from 'stores/decks';
+import useCardStore from 'stores/CardStore'
 import { urlFor } from 'sanity';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const { Sider, Content } = Layout;
 
@@ -12,9 +13,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   const decks = useDeckStore((state) => state.decks);
   const fetchDecks = useDeckStore((state) => state.fetch);
+  const setCurrentDeck = useDeckStore((state) => state.setCurrentDeck)
+  
+  const cards =  useCardStore((state) => state.cards)
+  const fetchCards = useCardStore((state) => state.fetch)
 
   useEffect(() => {
-    fetchDecks().catch((err) => console.log(err));
+    fetchDecks().catch((err) => toast.error(err.message))
+    fetchCards().catch(err => toast.error(err.message))
+    fetchCards
   }, []);
 
   function toggleCollapse() {
@@ -43,8 +50,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['decks']}
-          //TODO: Pass cards
-          onSelect={({ key }) => setCurrentDeck(key)}
+          onSelect={({ key }) => setCurrentDeck(key, cards.filter(({deck: {_ref}}) => _ref === key))}
           items={[
             {
               key: 'decks',
