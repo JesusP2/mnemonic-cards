@@ -2,8 +2,8 @@ import { Layout, Menu } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined, FolderOpenOutlined, FileImageOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import useDeckStore from 'stores/decks';
-import { sanityClient, urlFor } from 'sanity';
-import { Deck } from 'types';
+import { urlFor } from 'sanity';
+import { ToastContainer } from 'react-toastify';
 
 const { Sider, Content } = Layout;
 
@@ -42,10 +42,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={['decks']}
+          //TODO: Pass cards
+          onSelect={({ key }) => setCurrentDeck(key)}
           items={[
             {
-              key: '1',
+              key: 'decks',
               icon: <FolderOpenOutlined />,
               label: 'decks',
               children: decks.map(({ _id, mainImage, deck }) => ({
@@ -59,7 +61,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </Sider>
 
       <Layout className="site-layout">
-        <Content className="bg-neutral-900">{children}</Content>
+        <Content className="bg-neutral-900">
+          <ToastContainer />
+          {children}</Content>
       </Layout>
     </Layout>
   );
