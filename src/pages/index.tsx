@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import { ReactElement, useEffect } from 'react'
 import Layout from 'layouts/PlayGame'
 
 export default function Page() {
