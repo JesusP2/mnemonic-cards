@@ -5,13 +5,12 @@ import { ReactSetState } from "types";
 
 export default function PageOverview() {
   const currentDeck = useDeckStore(state => state.currentDeck)
-  const cardsTypeInCurrentDeckCount = {k: 'v'}
+  const cardsTypeInCurrentDeckCount = useDeckStore(state => state.cardsTypeInCurrentDeckCount)
   const setPlay = useGameStore(state => state.setPlay)
 
 
   function clickHandler() {
     setPlay(true)
-    console.log('iniciar!')
   }
   return (
     <>
