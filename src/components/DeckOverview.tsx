@@ -1,7 +1,7 @@
 import { urlFor } from "sanity";
 import useDeckStore from "stores/decks";
 import useGameStore from "stores/GameStore";
-import { ReactSetState } from "types";
+import {Upload} from 'antd'
 
 export default function PageOverview() {
   const currentDeck = useDeckStore(state => state.currentDeck)
@@ -14,12 +14,13 @@ export default function PageOverview() {
   }
   return (
     <>
-      <div className="w-full h-64 overflow-hidden">
+      <div className="w-full h-64 overflow-hidden relative">
         <img
           src={currentDeck?.mainImage ? urlFor(currentDeck.mainImage).url() : ''}
-          className="object-fit w-full"
+          className="object-cover w-full hover:scale-105 transition-transform duration-200 ease-in-out"
         />
       </div>
+        <Upload>hi</Upload>
       <div className="flex flex-col items-center gap-y-8">
         <h1 className="text-center font-bold text-4xl mt-4">{currentDeck?.deck}</h1>
         <h2 className="font-bold text-xl">Cards</h2>

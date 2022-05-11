@@ -8,7 +8,8 @@ export interface CardStore {
   cards: Card[];
   fetch: () => Promise<void>;
   currentCard: Card | null;
-  setCurrentCard: (deckId: string) => void;
+  setCurrentCard: (cardId: string) => void;
+  getNextCard: (deckId: string) => null | Card;
   createCard: (deckId: string, name: string, description: string, image?: File) => Promise<void>;
   updateCard: ({
     cardId,
@@ -31,17 +32,21 @@ export interface CardStore {
 const useCardStore = create<CardStore>((set, get) => ({
   cards: [],
   currentCard: null,
-
-  setCurrentCard: (deckId) => {
+  setCurrentCard: (cardId: string) => {
+    const card = get().cards.find(({_id}) => _id === cardId)
+    set(() => ({currentCard: card}))
+  },
+  getNextCard: (deckId) => {
     const currentCards = get().cards.filter((card) => card.deck._ref == deckId);
     for (let card of currentCards) {
       const diffTimestamp = Math.floor(Date.now() / 1000) - Math.floor((new Date(card.showAt) as any) / 1000);
       if (diffTimestamp > 0) {
         set(() => ({ currentCard: card }));
-        return;
+        return card
       }
     }
-    set(() => ({ currentCard: null }));
+
+    return null;
   },
 
   fetch: async () => {

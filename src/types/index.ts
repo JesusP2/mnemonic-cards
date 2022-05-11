@@ -47,3 +47,11 @@ export enum Difficulty {
     hard = 'hard',
     again = 'again',
 }
+
+export enum Selector {
+    createCard = 'createCard',
+    updateCard = 'updateCard',
+    createDeck = 'createDeck',
+    updateDeck = 'updateDeck',
+    none = 'none',
+}

@@ -60,7 +60,7 @@ const useDeckStore = create<DeckStore>((set, get) => ({
 
     const deckCreated = (await sanityClient.create(doc)) as Deck;
     set((state) => ({ decks: [...state.decks].concat([deckCreated]) }));
-    toast.info('Deck created!');
+    toast.success('Deck created!');
   },
 
   updateDeck: async ({ deckId, name, image }: { deckId: string; name?: string; image?: File }) => {
