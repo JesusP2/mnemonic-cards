@@ -26,6 +26,7 @@ export default function UpdateCard({ card }: { card: Card }) {
     //TODO: Activate only when fields are modified and update only those fields.
     try {
       await updateCard({ cardId: card._id, image: file as File, name: title, description });
+      toast.info("Card updated correctly!")
     } catch (err: unknown) {
       toast.error("Something went wrong, please try again")
     }

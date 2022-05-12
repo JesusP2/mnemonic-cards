@@ -9,7 +9,7 @@ export interface CardStore {
   fetch: () => Promise<void>;
   currentCard: Card | null;
   setCurrentCard: (cardId: string) => void;
-  getNextCard: (deckId: string) => null | Card;
+  getNextCard: (deckId?: string) => null | Card;
   createCard: (deckId: string, name: string, description: string, image?: File) => Promise<void>;
   updateCard: ({
     cardId,
@@ -37,15 +37,17 @@ const useCardStore = create<CardStore>((set, get) => ({
     set(() => ({currentCard: card}))
   },
   getNextCard: (deckId) => {
-    const currentCards = get().cards.filter((card) => card.deck._ref == deckId);
+    if (!deckId) return null;
+    const currentCards: Card[] = get().cards.filter((card) => card.deck._ref == deckId);
     for (let card of currentCards) {
       const diffTimestamp = Math.floor(Date.now() / 1000) - Math.floor((new Date(card.showAt) as any) / 1000);
       if (diffTimestamp > 0) {
-        set(() => ({ currentCard: card }));
+        // set(() => ({ currentCard: card }));
         return card
       }
     }
 
+    // set(() => ({currentCard: null}))
     return null;
   },
 
@@ -83,7 +85,7 @@ const useCardStore = create<CardStore>((set, get) => ({
     toast.info("Card created")
   },
 
-  updateCard: async ({ cardId, name, description, image, difficulty }) => {
+  updateCard: async ({ cardId, name, showAt, description, image, difficulty }) => {
     const doc = {} as any;
     if (name) {
       doc['title'] = name;
@@ -94,7 +96,7 @@ const useCardStore = create<CardStore>((set, get) => ({
     if (difficulty) {
       doc['difficulty'] = difficulty;
       //TODO: DEFINE SHOWAT
-      doc['showAt'] = 1000;
+      doc['showAt'] = showAt;
     }
     if (image && image.name) {
       const img = await sanityClient.assets.upload('image', image, { filename: image.name });
@@ -117,7 +119,6 @@ const useCardStore = create<CardStore>((set, get) => ({
         }
       });
       set(() => ({ cards: updatedCards }))
-      toast.info("Card updated correctly!")
     } else {
       toast.error("No fields to update")
     }
