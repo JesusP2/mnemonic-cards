@@ -21,7 +21,7 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
       setPlay(true)
       return
     } 
-    toast.success("Congratz, you've finished everything!")
+    toast.success("Congratz, you&apos;ve finished everything!")
   }
 
   const colors = ['green-400', 'blue-400', 'neutral-20', 'red-400']

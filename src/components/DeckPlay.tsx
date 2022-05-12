@@ -42,7 +42,7 @@ export default function DeckPlay({currentCard, setCurrentCard}: {currentCard: Ca
     }
     const nextCard = getNextCard(currentDeck?._id)
     if (!nextCard) {
-      toast.success("Congratz, you've finished everything!")
+      toast.success("Congratz, you&apos;ve finished everything!")
     }
     setCurrentCard(nextCard)
     setShowAnswer(false)
@@ -53,7 +53,7 @@ export default function DeckPlay({currentCard, setCurrentCard}: {currentCard: Ca
   }
 
   if (!currentCard) {
-    return <div className="text-white">You've finished for today!</div>;
+    return <div className="text-white">You&apos;ve finished for today!</div>;
   }
 
   return (
