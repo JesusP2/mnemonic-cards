@@ -21,10 +21,10 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
       setPlay(true)
       return
     } 
-    toast.success("Congratz, you&apos;ve finished everything!")
+    toast.success("Congratz, you've finished everything!")
   }
 
-  const colors = ['green-400', 'blue-400', 'neutral-20', 'red-400']
+  const colors = ['text-green-400', 'text-blue-400', 'text-neutral-20', 'text-red-400']
   return (
     <>
       <div className="w-full h-64 overflow-hidden relative group">
@@ -43,7 +43,7 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
             .slice(0, 4)
             .map(([k, v], idx) => (
               <div key={k} className="mx-2">
-                <h3 className={`text-${colors[idx]} capitalize`}>{k}</h3>
+                <h3 className={`${colors[idx]} capitalize`}>{k}</h3>
                 <p className={`text-center text-${colors[idx]}-500 underline `}>{v}</p>
               </div>
             ))}

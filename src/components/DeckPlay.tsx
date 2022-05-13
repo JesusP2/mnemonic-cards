@@ -1,6 +1,5 @@
 import { Card, Difficulty, ReactSetState } from 'types';
-import { Button } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CardFront from 'components/CardFront';
 import CardBack from 'components/CardBack';
 import useCardStore from 'stores/CardStore';
@@ -42,7 +41,7 @@ export default function DeckPlay({currentCard, setCurrentCard}: {currentCard: Ca
     }
     const nextCard = getNextCard(currentDeck?._id)
     if (!nextCard) {
-      toast.success("Congratz, you&apos;ve finished everything!")
+      toast.success("Congratz, you've finished everything!")
     }
     setCurrentCard(nextCard)
     setShowAnswer(false)
@@ -58,43 +57,45 @@ export default function DeckPlay({currentCard, setCurrentCard}: {currentCard: Ca
 
   return (
     <>
-      {showAnswer ? <CardBack currentCard={currentCard!} /> : <CardFront currentCard={currentCard!} />}
-      <div className="flex w-full justify-center mt-16">
+      <div className="w-full flex justify-center">
+        {showAnswer ? <CardBack currentCard={currentCard!} /> : <CardFront currentCard={currentCard!} />}
+      </div>
+      <div className="flex w-full justify-center mt-16 gap-x-2">
         {showAnswer ? (
           <>
-            <Button
+            <button
               onClick={() => clickHandler(Difficulty.again)}
-              className="w-24 h-16 grid place-items-center text-red-500 border border-r-0 border-gray-400"
+              className="w-24 text-white bg-red-800 hover:bg-red-700 flex flex-col justify-between py-2 h-16 rounded-sm"
             >
+              <p>AGAIN</p>
               <p className="text-xs">1 min</p>
-              <p>De nuevo</p>
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => clickHandler(Difficulty.hard)}
-              className="w-24 h-16 grid place-items-center text-focus border border-r-0 border-gray-400 text-neutral-200 hover:bg-indigo-900 hover:text-white focus:bg-inherit focus:text-white"
+              className="w-24 text-white bg-indigo-800 hover:bg-indigo-700 flex flex-col justify-between py-2 h-16 rounded-sm"
             >
+              <p>HARD</p>
               <p className="text-xs">10 mins</p>
-              <p>Dificil</p>
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => clickHandler(Difficulty.normal)}
-              className="w-24 h-16 grid place-items-center text-blue-400 border border-r-0 border-gray-400"
+              className="w-24 text-white bg-blue-800 hover:bg-blue-700 flex flex-col justify-between py-2 h-16 rounded-sm"
             >
-              <p className="text-xs">1 dia</p>
-              <p>Normal</p>
-            </Button>
-            <Button
+              <p>NORMAL</p>
+              <p className="text-xs">1 day</p>
+            </button>
+            <button
               onClick={() => clickHandler(Difficulty.easy)}
-              className="w-24 h-16 grid place-items-center text-green-400 border border-gray-400"
+              className="w-24 text-white bg-emerald-800 hover:bg-emerald-700 flex flex-col justify-between py-2 h-16 rounded-sm"
             >
-              <p className="text-xs">1 mes</p>
-              <p>Facil</p>
-            </Button>
+              <p>EASY</p>
+              <p className="text-xs">1 month</p>
+            </button>
           </>
         ) : (
-          <Button onClick={() => showAnswerHandler()} className="p-4 shadow-none rounded-sm bg-accent">
+          <button onClick={() => showAnswerHandler()} className="shadow-none rounded-sm bg-orange-700 hover:bg-orange-600 focus:bg-orange-600 border-none text-white px-4 h-10">
             Mostrar respuesta
-          </Button>
+          </button>
         )}
       </div>
     </>
