@@ -1,4 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Acme&display=swap');
 @import '~antd/dist/antd.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-noto-sans {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.font-acme {
+  font-family: 'Acme', sans-serif;
+}
