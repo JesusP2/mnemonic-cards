@@ -3,6 +3,8 @@ import { Input, Button, Form } from 'antd'
 import ExternalLogins from 'components/External-logins';
 import Link from 'next/link';
 import { useState } from 'react';
+import useAuthStore from 'stores/AuthStore';
+import client from 'supabase'
 
 type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus']
 
@@ -63,12 +65,22 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false)
   const [passwordLevel, setPasswordLevel] = useState(-1)
   const [password, setPassword] = useState<PasswordValidation>({ value: '', validateStatus: 'success', errorMsg: null } as PasswordValidation)
+  const signUp = useAuthStore(state => state.signUp)
 
-  const onFinish = (values: { password: string; email: string; username: string }) => {
-    if (!values.password) {
+
+  const onFinish = async ({password, email, username}: { password: string; email: string; username: string }) => {
+    console.log(email)
+    console.log(password)
+    if (!password) {
       setPassword(prev => ({ ...prev, validateStatus: 'error' }))
       setPasswordLevel(0)
       return
+    }
+    try {
+      const {error, session, user} = await signUp(email, password)
+      console.log(error)
+    } catch(err: unknown) {
+      console.error(err)
     }
   };
 
@@ -114,6 +126,7 @@ export default function SignIn() {
               type={showPassword ? 'text' : 'password'}
               onChange={(e) => onPasswordChange(e.target.value)}
             />
+          </Form.Item>
             <div className="flex mt-2 w-64">
               <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 0 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
               <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 1 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
@@ -121,7 +134,6 @@ export default function SignIn() {
               <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 3 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
               <div className={`w-full h-2 border-[1px] border-solid ${passwordLevel > 4 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
             </div>
-          </Form.Item>
           <Form.Item
             className="mt-4 mb-0"
           >

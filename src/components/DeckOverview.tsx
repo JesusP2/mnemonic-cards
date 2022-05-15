@@ -4,7 +4,6 @@ import useCardStore from 'stores/CardStore'
 import useGameStore from "stores/GameStore";
 import {Upload} from 'antd'
 import { toast } from "react-toastify";
-import { useEffect } from "react";
 import { Card, ReactSetState } from "types";
 
 export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSetState<Card | null>}) {
@@ -24,7 +23,7 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
     toast.success("Congratz, you've finished everything!")
   }
 
-  const colors = ['text-green-400', 'text-blue-400', 'text-neutral-20', 'text-red-400']
+  const colors = ['text-green-400', 'text-blue-400', 'text-neutral-200', 'text-red-400']
   return (
     <>
       <div className="w-full h-64 overflow-hidden relative group">
@@ -44,7 +43,7 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
             .map(([k, v], idx) => (
               <div key={k} className="mx-2">
                 <h3 className={`${colors[idx]} capitalize`}>{k}</h3>
-                <p className={`text-center text-${colors[idx]}-500 underline `}>{v}</p>
+                <p className={`text-center ${colors[idx]} underline `}>{v}</p>
               </div>
             ))}
         </div>
