@@ -5,7 +5,7 @@ export default function Verified() {
       <div className="w-full max-w-md sm:shadow-xl rounded-lg px-8 py-8 bg-white">
         <h2 className="font-bold text-lg font-acme">Nimonikku</h2>
         <h1 className='font-bold text-2xl mt-6 mb-2'>Email verified</h1>
-        <p className=' text-neutral-500 mb-4'>Congratz! You've verified your email</p>
+        <p className=' text-neutral-500 mb-4'>Congratz! You&apos;ve verified your email</p>
         <Link href="/">
           <a>
             <button
