@@ -1,11 +1,10 @@
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import Layout from 'layouts/MainLayout';
 import useDeckStore from 'stores/decks';
 import useGameStore from 'stores/GameStore';
 import PageIntro from 'components/PageIntro';
 import DeckOverview from 'components/DeckOverview';
 import DeckPlay from 'components/DeckPlay';
-import useCardStore from "stores/CardStore";
 import { Card } from 'types';
 
 export default function Page() {

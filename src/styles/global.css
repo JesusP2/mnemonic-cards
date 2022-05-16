@@ -12,3 +12,11 @@
 .font-acme {
   font-family: 'Acme', sans-serif;
 }
+
+.google-icon {
+  color: #DC2626;
+  position: relative;
+  bottom: 1px;
+  font-size: 1.5rem; /* 24px */
+  line-height: 2rem; /* 32px */
+}

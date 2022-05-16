@@ -1,10 +1,9 @@
 import { UserOutlined, LockOutlined, EyeOutlined, MailOutlined } from '@ant-design/icons'
-import { Input, Button, Form } from 'antd'
+import { Input, Form } from 'antd'
 import ExternalLogins from 'components/External-logins';
 import Link from 'next/link';
 import { useState } from 'react';
 import useAuthStore from 'stores/AuthStore';
-import client from 'supabase'
 
 type ValidateStatus = Parameters<typeof Form.Item>[0]['validateStatus']
 
@@ -68,18 +67,15 @@ export default function SignIn() {
   const signUp = useAuthStore(state => state.signUp)
 
 
-  const onFinish = async ({password, email, username}: { password: string; email: string; username: string }) => {
-    console.log(email)
-    console.log(password)
+  const onFinish = async ({ password, email }: { password: string; email: string; username: string }) => {
     if (!password) {
       setPassword(prev => ({ ...prev, validateStatus: 'error' }))
       setPasswordLevel(0)
       return
     }
     try {
-      const {error, session, user} = await signUp(email, password)
-      console.log(error)
-    } catch(err: unknown) {
+      const { error, session, user } = await signUp(email, password)
+    } catch (err: unknown) {
       console.error(err)
     }
   };
@@ -102,42 +98,43 @@ export default function SignIn() {
           <Form.Item
             name="username"
             rules={[{ required: true, message: 'Please input your username!' }]}
-            className='mb-4'
+            style={{marginBottom: '1rem'}}
           >
-            <Input prefix={<UserOutlined />} placeholder='John Doe' className='rounded-sm h-10' type='text' />
+            <Input prefix={<UserOutlined />} placeholder='John Doe' type='text' style={{borderRadius: '0.125rem', height: '2.5rem'}} />
           </Form.Item>
           <Form.Item
             name="email"
             rules={[{ required: true, message: 'Please input a valid email', type: 'email' }]}
-            className='mb-4'
+            style={{marginBottom: '1rem'}}
           >
-            <Input prefix={<MailOutlined />} placeholder='example@gmail.com' className='rounded-sm h-10' type='email' />
+            <Input prefix={<MailOutlined />} placeholder='example@gmail.com' type='email' style={{borderRadius: '0.125rem', height: '2.5rem'}} />
           </Form.Item>
           <Form.Item
             name="password"
             validateStatus={password.validateStatus}
-            className='mb-1'
+            style={{marginBottom: '0.25rem'}}
           >
             <Input
               prefix={<LockOutlined />}
               suffix={<EyeOutlined onClick={() => setShowPassword(prev => !prev)} />}
               placeholder='password'
-              className='rounded-sm h-10'
+              style={{borderRadius: '0.125rem', height: '2.5rem'}}
               type={showPassword ? 'text' : 'password'}
               onChange={(e) => onPasswordChange(e.target.value)}
             />
           </Form.Item>
-            <div className="flex mt-2 w-64">
-              <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 0 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
-              <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 1 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
-              <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 2 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
-              <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 3 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
-              <div className={`w-full h-2 border-[1px] border-solid ${passwordLevel > 4 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
-            </div>
+          <div className="flex mt-2 w-64">
+            <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 0 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
+            <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 1 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
+            <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 2 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
+            <div className={`w-full h-2 border-[1px] border-solid border-r-0 ${passwordLevel > 3 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
+            <div className={`w-full h-2 border-[1px] border-solid ${passwordLevel > 4 ? 'bg-green-600' : (passwordLevel !== -1 ? 'bg-red-600' : '')}`}></div>
+          </div>
           <Form.Item
-            className="mt-4 mb-0"
+            style={{margin: '1rem 0 0 0'}}
           >
-            <Button htmlType="submit" className="border-none w-full rounded-xl text-center table mx-auto h-[42px] py-2 bg-indigo-800 focus:bg-indigo-700 focus:text-neutral-200 hover:bg-indigo-700 hover:text-neutral-200 text-neutral-200 font-bold">Create account</Button>
+            <button type='submit'></button>
+            <button type="submit" className="border-none w-full rounded-xl text-center table mx-auto h-[42px] py-2 bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 text-white font-bold">Create account</button>
           </Form.Item>
         </Form>
         <p className="text-neutral-500 font-bold text-xs text-center my-4">OR</p>

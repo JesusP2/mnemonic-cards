@@ -16,25 +16,25 @@ export default function DeckPlay({currentCard, setCurrentCard}: {currentCard: Ca
   async function clickHandler(difficulty: Difficulty) {
     if (difficulty === Difficulty.again) {
       await updateCard({
-        cardId: currentCard!._id,
+        cardId: currentCard?._id,
         difficulty: difficulty,
         showAt: new Date(Math.floor(Date.now() + 60 * 1000)).toISOString(),
       });
     } else if (difficulty === Difficulty.hard) {
       await updateCard({
-        cardId: currentCard!._id,
+        cardId: currentCard._id,
         difficulty: difficulty,
         showAt: new Date(Math.floor(Date.now() + 60 * 10 * 1000)).toISOString(),
       });
     } else if (difficulty === Difficulty.normal) {
       await updateCard({
-        cardId: currentCard!._id,
+        cardId: currentCard._id,
         difficulty: difficulty,
         showAt: new Date(Math.floor(Date.now() + 60 * 60 * 24 * 1000)).toISOString(),
       });
     } else {
       await updateCard({
-        cardId: currentCard!._id,
+        cardId: currentCard._id,
         difficulty: difficulty,
         showAt: new Date(Math.floor(Date.now() + 60 * 60 * 24 * 31 * 1000)).toISOString(),
       });
@@ -58,7 +58,7 @@ export default function DeckPlay({currentCard, setCurrentCard}: {currentCard: Ca
   return (
     <>
       <div className="w-full flex justify-center">
-        {showAnswer ? <CardBack currentCard={currentCard!} /> : <CardFront currentCard={currentCard!} />}
+        {showAnswer ? <CardBack currentCard={currentCard} /> : <CardFront currentCard={currentCard} />}
       </div>
       <div className="flex w-full justify-center mt-16 gap-x-2">
         {showAnswer ? (

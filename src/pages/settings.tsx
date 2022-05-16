@@ -1,5 +1,5 @@
-import { ReactElement, useState } from 'react';
-import { Button, Menu } from 'antd';
+import { ReactElement } from 'react';
+import { Menu } from 'antd';
 import { FileImageOutlined, PlusSquareOutlined } from '@ant-design/icons'
 import Layout from 'layouts/MainLayout';
 import { Selector } from 'types';
@@ -13,8 +13,6 @@ import useDeckStore from 'stores/decks';
 import useGameStore from 'stores/GameStore';
 
 export default function SettingsPage() {
-  const [items, setItems] = useState<{ key: string; icon?: any; label: string }[]>([]);
-
   const currentDeck = useDeckStore(state => state.currentDeck)
   const cards = useCardStore(state => state.cards)
   const currentCard = useCardStore(state => state.currentCard)
@@ -59,9 +57,9 @@ export default function SettingsPage() {
       >
         <div className={"flex px-4 h-12 text-xl items-center justify-between " + (displaySelector === Selector.createDeck ? 'hidden' : '')}>
           <h2 className="font-bold text-gray-200">Cards</h2>
-          <Button onClick={createCardHandler} className="grid place-items-center text-white">
+          <button onClick={createCardHandler} className="grid place-items-center text-white">
             <PlusSquareOutlined />
-          </Button>
+          </button>
         </div>
         <div className={(displaySelector === Selector.createDeck ? 'hidden' : '')}>
           <Menu

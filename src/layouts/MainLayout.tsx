@@ -77,12 +77,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed} width="15rem" className="h-screen shadow-xl hidden">
+      <Sider trigger={null} collapsible collapsed={collapsed} width="15rem" className="h-screen shadow-xl">
         <div className="w-full flex justify-end px-2">
           {collapsed ? (
-            <MenuUnfoldOutlined onClick={toggleCollapse} className="text-white text-xl" />
+            <MenuUnfoldOutlined onClick={toggleCollapse} style={{color: 'white', fontSize: '1.25rem', lineHeight: '1.75rem'}}/>
           ) : (
-            <MenuFoldOutlined onClick={toggleCollapse} className="text-white text-xl" />
+            <MenuFoldOutlined onClick={toggleCollapse} style={{color: 'white', fontSize: '1.25rem', lineHeight: '1.75rem'}} />
           )}
         </div>
         <Menu
@@ -103,7 +103,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </Sider>
 
       <Layout className="h-screen">
-        <Content className="bg-neutral-900">
+        <Content className="bg-neutral-900" style={{color: '#F5F5F5'}}>
           <ToastContainer />
           {children}
         </Content>
