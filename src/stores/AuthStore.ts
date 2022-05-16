@@ -20,7 +20,7 @@ const useAuthStore = create<AuthStore>(() => ({
     signUp: async (email, password) => {
         return supabase.auth.signUp(
             { email, password },
-            { redirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_REDIRECT!}/login?message=Congratz!` },
+            { redirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_REDIRECT!}/auth/verified?message=Congratz!` },
         );
     },
 
