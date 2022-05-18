@@ -5,16 +5,18 @@ import type { Card, Deck } from 'types';
 import { Difficulty } from 'types'
 
 export interface CardStore {
-  cards: Card[];
-  fetch: () => Promise<void>;
+  cards: {[key: string]: Card[]};
+  fetch: (deckId: string) => Promise<{[key: string]: Card[]}>;
+  assignDeckSpace: (deckId: string) => void;
   currentCard: Card | null;
-  setCurrentCard: (cardId: string) => void;
+  setCurrentCard: (cardId: string, deckId: string) => void;
   getNextCard: (deckId?: string) => null | Card;
-  createCard: (deckId: string, name: string, description: string, image?: File) => Promise<void>;
+  createCard: (deckId: string, name: string, hint: string, answer: string, image?: File) => Promise<void>;
   updateCard: ({
     cardId,
     name,
-    description,
+    hint,
+    answer,
     difficulty,
     showAt,
     image,
@@ -22,23 +24,24 @@ export interface CardStore {
     cardId: string;
     showAt?: string;
     name?: string;
-    description?: string;
+    hint?: string;
+    answer?: string;
     difficulty?: Difficulty;
     image?: File;
   }) => Promise<void>;
-  deleteCard: (cardId: string) => Promise<void>;
+  deleteCard: (deckId: string, cardId: string) => Promise<void>;
 }
 
 const useCardStore = create<CardStore>((set, get) => ({
-  cards: [],
+  cards: {},
   currentCard: null,
-  setCurrentCard: (cardId: string) => {
-    const card = get().cards.find(({_id}) => _id === cardId)
+  setCurrentCard: (deckId, cardId) => {
+    const card = get().cards[deckId].find(({_id}) => _id === cardId)
     set(() => ({currentCard: card}))
   },
   getNextCard: (deckId) => {
     if (!deckId) return null;
-    const currentCards: Card[] = get().cards.filter((card) => card.deck._ref == deckId);
+    const currentCards: Card[] = get().cards[deckId]
     for (let card of currentCards) {
       const diffTimestamp = Math.floor(Date.now() / 1000) - Math.floor((new Date(card.showAt) as any) / 1000);
       if (diffTimestamp > 0) {
@@ -51,17 +54,27 @@ const useCardStore = create<CardStore>((set, get) => ({
     return null;
   },
 
-  fetch: async () => {
-    const query = `*[_type == 'card']`;
-    const cards = await sanityClient.fetch(query);
-    set(() => ({ cards }));
+  fetch: async (deckId) => {
+    const query = `*[_type == 'card' && deck._ref == '${deckId}']`;
+    const cards: Card[] = await sanityClient.fetch(query);
+    set((state) => ({ cards: {
+        ...state.cards,
+        [deckId]: cards
+    } }));
+    return {...get().cards, [deckId]: cards}
   },
-
-  createCard: async (deckId: string, name: string, description: string, image?: File) => {
+  assignDeckSpace: (deckId) => {
+    set((state) => ({cards: {
+      ...state.cards,
+      [deckId]: []
+    }}))
+  },
+  createCard: async (deckId, name, hint, answer, image) => {
     const doc: Omit<Card, '_createdAt' | '_id' | '_updatedAt' | '_rev'> = {
       _type: 'card',
       title: name,
-      description,
+      hint,
+      answer,
       difficulty: Difficulty.again,
       showAt: new Date(Date.now() + 6000).toISOString(),
       deck: {
@@ -81,17 +94,24 @@ const useCardStore = create<CardStore>((set, get) => ({
     }
 
     const cardCreated = (await sanityClient.create(doc)) as Card;
-    set((state) => ({ cards: [...state.cards].concat([cardCreated]) }))
+    set((state) => ({cards: {
+      ...state.cards,
+      [deckId]: [...state.cards[deckId].concat([cardCreated])]
+    }}))
+    // set((state) => ({ cards: [...state.cards].concat([cardCreated]) }))
     toast.info("Card created")
   },
 
-  updateCard: async ({ cardId, name, showAt, description, image, difficulty }) => {
+  updateCard: async ({ cardId, name, showAt, hint, answer, image, difficulty }) => {
     const doc = {} as any;
     if (name) {
       doc['title'] = name;
     }
-    if (description) {
-      doc['description'] = description;
+     if(hint) {
+      doc['hint'] = hint;
+    }
+    if (answer) {
+      doc['answer'] = answer;
     }
     if (difficulty) {
       doc['difficulty'] = difficulty;
@@ -111,30 +131,38 @@ const useCardStore = create<CardStore>((set, get) => ({
 
     if (Object.values(doc).length) {
       const updatedCard: Card = await sanityClient.patch(cardId).set(doc).commit();
-      const updatedCards = get().cards.map((card) => {
+      const updatedCards = get().cards[updatedCard.deck._ref].map((card) => {
         if (card._id === updatedCard._id) {
           return updatedCard;
         } else {
           return card;
         }
       });
-      set(() => ({ cards: updatedCards }))
+      set((state) => ({cards: {
+        ...state.cards,
+        [updatedCard.deck._ref]: updatedCards
+      }}))
+      // set((state) => ({ cards: updatedCards }))
     } else {
       toast.error("No fields to update")
     }
 
   },
 
-  deleteCard: async (cardId) => {
+  deleteCard: async (deckId, cardId) => {
     await sanityClient.delete(cardId);
 
-    const updatedCards = get().cards.map((card) => {
+    const updatedCards = get().cards[deckId].map((card) => {
       if (card._id !== cardId) {
         return card;
       }
     }) as Card[];
 
-    set(() => ({ cards: updatedCards }));
+    // set(() => ({ cards: updatedCards }));
+    set((state) => ({ cards: {
+      ...state.cards,
+      [deckId]: updatedCards
+    }}));
     toast.info("Card deleted succesfully!")
   },
 }));

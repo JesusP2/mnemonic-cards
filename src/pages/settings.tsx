@@ -38,7 +38,8 @@ export default function SettingsPage() {
   }
 
   function setCardHandler(cardId: string) {
-    setCurrentCard(cardId);
+    if (!currentDeck) return;
+    setCurrentCard(currentDeck._id, cardId);
     setDisplaySelector(Selector.updateCard);
   }
 
@@ -62,16 +63,18 @@ export default function SettingsPage() {
           </button>
         </div>
         <div className={(displaySelector === Selector.createDeck ? 'hidden' : '')}>
-          <Menu
-            theme="dark"
-            mode="inline"
-            style={{backgroundColor: '#171717'}}
-            defaultSelectedKeys={['decks']}
-            onSelect={({key}) => setCardHandler(key)}
-            items={[
-              ...cards?.filter(({deck: {_ref}}) => _ref === currentDeck?._id).map((card) => ({key: card._id, icon: <ImageCard url={card.mainImage} />, label: card.title}))
-            ]}
-          ></Menu>
+          {currentDeck && cards[currentDeck._id] &&
+            <Menu
+              theme="dark"
+              mode="inline"
+              style={{ backgroundColor: '#171717' }}
+              defaultSelectedKeys={['decks']}
+              onSelect={({ key }) => setCardHandler(key)}
+              items={[
+                ...cards[currentDeck._id].map((card) => ({ key: card?._id, icon: <ImageCard url={card?.mainImage} />, label: card?.title }))
+              ]}
+            ></Menu>
+          }
         </div>
       </div>
       <div className="flex-1 max-h-[100vh]">{DisplaySelector()}</div>

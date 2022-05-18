@@ -7,7 +7,9 @@ export interface Deck {
     _type: 'deck';
     _updatedAt: string;
     cardNumber: number;
-    deck: string;
+    userId: string;
+    title: string;
+    description: string;
     mainImage?: {
         _type: string;
         asset: {
@@ -28,7 +30,8 @@ export interface Card {
         _ref: string;
         _type: string;
     };
-    description: string;
+    hint: string;
+    answer: string;
     difficulty: Difficulty;
     showAt: string;
     mainImage?: {

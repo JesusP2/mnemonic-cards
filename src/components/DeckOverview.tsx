@@ -35,7 +35,7 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
 
       </div>
       <div className="flex flex-col items-center gap-y-8">
-        <h1 className="text-center font-bold text-4xl mt-4 text-neutral-300">{currentDeck?.deck}</h1>
+        <h1 className="text-center font-bold text-4xl mt-4 text-neutral-300">{currentDeck?.title}</h1>
         <h2 className="font-bold text-xl text-neutral-300 font-mono">Cards</h2>
         <div className="flex">
           {Object.entries(cardsTypeInCurrentDeckCount)

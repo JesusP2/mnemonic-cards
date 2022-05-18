@@ -9,6 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import useGameStore from 'stores/GameStore';
 import { Selector } from 'types';
 import { useRouter } from 'next/router';
+import useAuthStore from 'stores/AuthStore';
 
 const { Sider, Content } = Layout;
 
@@ -18,11 +19,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter()
   const decks = useDeckStore((state) => state.decks);
   const fetchDecks = useDeckStore((state) => state.fetch);
+  const currentDeck = useDeckStore((state) => state.currentDeck)
   const setCurrentDeck = useDeckStore((state) => state.setCurrentDeck);
+  const setCardsTypeInCurrentDeckCount = useDeckStore((state) => state.setCardsTypeInCurrentDeckCount)
   const cards = useCardStore((state) => state.cards);
   const fetchCards = useCardStore((state) => state.fetch);
   const setPlay = useGameStore((state) => state.setPlay);
   const setDisplaySelector = useGameStore((state) => state.setDisplaySelector);
+  const getUser = useAuthStore(state => state.getUser)
 
   useEffect(() => {
     if (router.pathname.split('/')[1] === 'settings') {
@@ -36,26 +40,33 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           ),
           label: 'New deck',
         },
-        ...decks.map(({ _id, mainImage, deck }) => ({
+        ...decks.map(({ _id, mainImage, title }) => ({
           key: _id,
           icon: <ImageCard url={mainImage} />,
-          label: deck,
+          label: title,
         })),
       ]);
     } else {
       setItems([
-        ...decks.map(({ _id, mainImage, deck }) => ({
+        ...decks.map(({ _id, mainImage, title }) => ({
           key: _id,
           icon: <ImageCard url={mainImage} />,
-          label: deck,
+          label: title,
         })),
       ]);
     }
   }, [decks]);
 
   useEffect(() => {
-    fetchDecks().catch((err) => toast.error(err.message));
-    fetchCards().catch((err) => toast.error(err.message));
+    getUser().then(({ user, error }) => {
+      if (user) {
+        fetchDecks(user.id).catch((err) => toast.error(err.message));
+      } else {
+        toast.error("Something when wrong, please try again")
+      }
+    }).catch((err) => {
+      toast.error("Something when wrong, please try again")
+    })
   }, []);
 
   function toggleCollapse() {
@@ -69,10 +80,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     }
     setDisplaySelector(Selector.updateDeck);
     setCurrentDeck(
-      key,
-      cards.filter(({ deck: { _ref } }) => _ref === key),
+      key
     );
     setPlay(false);
+    if (!(key in cards)) {
+      fetchCards(key).then((cards) => {
+        setCardsTypeInCurrentDeckCount(cards[key])
+      }).catch((err) => toast.error(err.message))
+      return
+    }
   }
 
   return (
@@ -80,15 +96,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <Sider trigger={null} collapsible collapsed={collapsed} width="15rem" className="h-screen shadow-xl">
         <div className="w-full flex justify-end px-2">
           {collapsed ? (
-            <MenuUnfoldOutlined onClick={toggleCollapse} style={{color: 'white', fontSize: '1.25rem', lineHeight: '1.75rem'}}/>
+            <MenuUnfoldOutlined onClick={toggleCollapse} style={{ color: 'white', fontSize: '1.25rem', lineHeight: '1.75rem' }} />
           ) : (
-            <MenuFoldOutlined onClick={toggleCollapse} style={{color: 'white', fontSize: '1.25rem', lineHeight: '1.75rem'}} />
+            <MenuFoldOutlined onClick={toggleCollapse} style={{ color: 'white', fontSize: '1.25rem', lineHeight: '1.75rem' }} />
           )}
         </div>
         <Menu
           theme="dark"
           mode="inline"
-          style={{overflow: 'auto', maxHeight: 'calc(100% - 28px)'}}
+          style={{ overflow: 'auto', maxHeight: 'calc(100% - 28px)' }}
           defaultSelectedKeys={['decks']}
           onSelect={({ key }) => onSelect(key)}
           items={[
@@ -103,7 +119,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </Sider>
 
       <Layout className="h-screen">
-        <Content className="bg-neutral-900" style={{color: '#F5F5F5'}}>
+        <Content className="bg-neutral-900" style={{ color: '#F5F5F5' }}>
           <ToastContainer />
           {children}
         </Content>
