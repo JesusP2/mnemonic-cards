@@ -69,7 +69,7 @@ export default function SettingsPage() {
               mode="inline"
               style={{ backgroundColor: '#171717' }}
               defaultSelectedKeys={['decks']}
-              onSelect={({ key }) => setCardHandler(key)}
+              onClick={({ key }) => setCardHandler(key)}
               items={[
                 ...cards[currentDeck._id].map((card) => ({ key: card?._id, icon: <ImageCard url={card?.mainImage} />, label: card?.title }))
               ]}

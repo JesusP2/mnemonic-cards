@@ -150,8 +150,16 @@ const useCardStore = create<CardStore>((set, get) => ({
   },
 
   deleteCard: async (deckId, cardId) => {
+    console.log('-------pre delete----------')
+    console.log(deckId)
+    console.log(get().cards)
+    console.log(get().cards[deckId])
     await sanityClient.delete(cardId);
-
+    console.log('----------post delete---------')
+    console.log(deckId)
+    console.log(get().cards)
+    console.log(get().cards[deckId])
+    //FIXME: Somehow it says that card is undefined
     const updatedCards = get().cards[deckId].map((card) => {
       if (card._id !== cardId) {
         return card;

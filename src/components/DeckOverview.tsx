@@ -29,7 +29,7 @@ export default function PageOverview({setCurrentCard}: {setCurrentCard: ReactSet
       <div className="w-full h-64 overflow-hidden relative group">
         <img
           src={currentDeck?.mainImage ? urlFor(currentDeck.mainImage).url() : ''}
-          className="object-cover w-full group-hover:scale-105 transition-transform duration-200 ease-in-out"
+          className="object-cover w-full"
         />
         <Upload className={`group-hover:block`} style={{position: 'absolute', zIndex: '50', top: '8rem', marginLeft: '45%', display:'none' }}><h3 className="text-xl text-gray-300 font-bold">Upload image</h3></Upload>
 

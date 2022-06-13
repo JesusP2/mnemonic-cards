@@ -14,6 +14,7 @@ export default function UpdateDeck({
   deck: Deck;
 }) {
   const updateDeck = useDeckStore(state => state.updateDeck)
+  const deleteDeck = useDeckStore(state => state.deleteDeck)
   const [title, setTitle] = useState(deck.title);
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState(deck.description)
@@ -41,7 +42,7 @@ export default function UpdateDeck({
         <UploadImage imgUrl={imgUrl} setImgUrl={setImgUrl} setFile={setFile} />
         <Description description={description} setDescription={setDescription} />
       </div>
-      <UpdateControlPanel updateHandler={updateHandler} action='Update' />
+      <UpdateControlPanel updateHandler={updateHandler} action='Update' deleteRecord={() => deleteDeck(deck._id)} />
     </div>
   );
 }

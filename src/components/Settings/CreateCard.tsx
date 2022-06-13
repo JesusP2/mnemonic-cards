@@ -31,6 +31,7 @@ export default function CreateCard() {
   }
   return (
     <div className="flex flex-col h-full">
+      <div className="overflow-auto flex-1">
       <div className="w-[35rem] mx-auto pt-8 flex-1">
         <Title title={title} setTitle={setTitle} />
         <UploadImage imgUrl={imgUrl} setImgUrl={setImgUrl} setFile={setFile} />
@@ -46,7 +47,7 @@ export default function CreateCard() {
             className="text-gray-200 bg-inherit outline focus:outline-2 focus:outline-blue-600 outline-1 outline-gray-400 w-full py-1 pl-4 mt-2 dark:outline-gray-700  dark:focus:outline-blue-600"
           />
         </div>
-        <div>
+        <div className='mb-8 mt-4'>
           <label htmlFor="Answer">
             <h1 className="text-sm font-bold text-gray-200">Answer</h1>
           </label>
@@ -58,6 +59,7 @@ export default function CreateCard() {
             className="text-gray-200 bg-inherit outline focus:outline-2 focus:outline-blue-600 outline-1 outline-gray-400 w-full py-1 pl-4 mt-2 dark:outline-gray-700  dark:focus:outline-blue-600"
           />
         </div>
+      </div>
       </div>
       <UpdateControlPanel updateHandler={updateHandler} action="Create" />
     </div>

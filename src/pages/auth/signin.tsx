@@ -2,15 +2,23 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Form } from 'antd';
 import Link from 'next/link';
 import ExternalLogins from 'components/External-logins';
+import useAuthStore from 'stores/AuthStore';
 
 export default function SignIn() {
+  const signin = useAuthStore(state => state.signIn)
+
+  const signIn = ({email, password}: {email: string; password: string}) => {
+        signin(email, password)
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err))
+    }
   return (
     <div className="grid place-items-center bg-neutral-800 h-screen">
       <div className="w-full max-w-md sm:shadow-xl rounded-lg px-8 py-8 bg-white">
         <h1 className="text-3xl xl:text-4xl 2xl:text-5xl font-semibold font-acme text-center">Nimonikku</h1>
         <img src="/brain-webp.png" className="cover w-32 xl:w-36 2xl:w-40 mx-auto" />
         <h2 className="text-xl lg:text-2xl font-semibold mb-6">Login</h2>
-        <Form onFinish={(values: {email: string; password: string}) => console.log(values)}>
+        <Form onFinish={signIn}>
           <Form.Item
             name="email"
             style={{marginBottom: '1rem'}}

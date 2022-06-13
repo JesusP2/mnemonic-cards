@@ -29,7 +29,6 @@ const useDeckStore = create<DeckStore>((set, get) => ({
     set((state) => ({ currentDeck: state.decks.filter(({ _id }) => _id === deckId)[0] }));
   },
   setCardsTypeInCurrentDeckCount: (cards) => {
-    console.log(cards)
     const count = { easy: 0, normal: 0, hard: 0, again: 0, none: 0 };
     cards.forEach(({ difficulty, deck }) => {
       if (get().currentDeck?._id === deck._ref) {
