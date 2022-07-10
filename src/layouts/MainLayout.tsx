@@ -30,6 +30,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     const getUser = useAuthStore(state => state.getUser)
 
     const [isHome, setIsHome] = useState(false)
+    
+    useEffect(() => {
+        (async () => {
+            const user = await getUser()
+            console.info(user)
+            if (!user) {
+                router.push('/auth/signin')
+            }
+        })()
+    }, [])
 
     useEffect(() => {
         setIsHome(router.pathname.split('/')[1] !== 'settings')
