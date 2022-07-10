@@ -144,7 +144,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </Sider>
             <Layout className="h-screen">
                 <Content className="bg-neutral-900" style={{ color: '#F5F5F5' }}>
-                    <ToastContainer />
                     {children}
                 </Content>
             </Layout>
