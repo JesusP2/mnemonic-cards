@@ -28,14 +28,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     const setPlay = useGameStore((state) => state.setPlay);
     const setDisplaySelector = useGameStore((state) => state.setDisplaySelector);
     const getUser = useAuthStore(state => state.getUser)
+    const signOut = useAuthStore(state => state.signOut)
 
     const [isHome, setIsHome] = useState(false)
-    
+
     useEffect(() => {
         (async () => {
-            const user = await getUser()
-            console.info(user)
-            if (!user) {
+            try {
+                await getUser()
+            } catch (err: unknown) {
                 router.push('/auth/signin')
             }
         })()
@@ -121,12 +122,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <Menu
                     theme="dark"
                     mode="inline"
-                    style={{ overflow: 'auto', maxHeight: 'calc(100% - 28px)' }}
+                    style={{ overflow: 'auto', maxHeight: 'calc(100% - 128px)' }}
                     defaultSelectedKeys={['decks']}
                     onClick={({ key }) => onSelect(key)}
                     items={[
                         {
-                            key: isHome ? 'settings' : 'home' ,
+                            key: isHome ? 'settings' : 'home',
                             icon: isHome ? <SettingOutlined /> : <HomeOutlined />,
                             label: isHome ? 'settings' : 'home',
                             onClick: () => isHome ? router.push('/settings') : router.push('/'),
@@ -139,6 +140,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         },
                     ]}
                 ></Menu>
+                <button onClick={() => signOut()} className='text-white'>Sign out</button>
             </Sider>
             <Layout className="h-screen">
                 <Content className="bg-neutral-900" style={{ color: '#F5F5F5' }}>
