@@ -97,9 +97,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             return
         }
         setDisplaySelector(Selector.updateDeck);
-        setCurrentDeck(
-            key
-        );
+        setCurrentDeck(key);
         setPlay(false);
         if (!(key in cards)) {
             fetchCards(key).then((cards) => {
@@ -107,6 +105,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             }).catch((err) => toast.error(err.message))
             return
         }
+        setCardsTypeInCurrentDeckCount(cards[key])
     }
 
     return (

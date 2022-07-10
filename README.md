@@ -4,4 +4,4 @@ TODOS:
 - Design page for email confirmation
 - Update button must say create or update
 - When acc created or signed in it must redirect to the index page
-- Route guard for non-uses
+- [x] Route guard for non-uses
