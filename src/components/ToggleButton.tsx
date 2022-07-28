@@ -8,9 +8,9 @@ interface Props {
   onClick?: (e?: React.MouseEvent) => void;
 }
 export default function ToggleButton(props: Props) {
-  let ref = useRef(null)
-  let state = useToggleState(props)
-  let { buttonProps, isPressed } = useToggleButton(props, state, ref)
+  const ref = useRef(null)
+  const state = useToggleState(props)
+  const { buttonProps } = useToggleButton(props, state, ref)
   console.log(buttonProps)
   return (
     <button
